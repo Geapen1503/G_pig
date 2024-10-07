@@ -106,7 +106,7 @@ def ajouter_au_demarrage(programme_nom):
 
 programme_nom = 'main'
 
-ajouter_au_demarrage(programme_nom)
+#ajouter_au_demarrage(programme_nom)
 
 def stop_program(event=None):
     root.destroy()
